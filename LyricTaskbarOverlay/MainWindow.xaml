@@ -1,0 +1,66 @@
+<Window x:Class="LyricTaskbarOverlay.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ResizeMode="CanResizeWithGrip"
+        ShowInTaskbar="False"
+        SizeToContent="Manual"
+        Topmost="True"
+        WindowStyle="None">
+  <Border x:Name="Chrome"
+          Background="#E61B1B1B"
+          BorderBrush="#333333"
+          BorderThickness="1"
+          CornerRadius="6"
+          Padding="14,7"
+          MouseLeftButtonDown="OnMouseLeftButtonDown">
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <Ellipse Width="8"
+               Height="8"
+               Margin="0,0,10,0"
+               Fill="#1ED760"
+               VerticalAlignment="Center" />
+
+      <Grid Grid.Column="1">
+          <TextBlock x:Name="LyricText1"
+                     Foreground="#F7F7F7"
+                     FontFamily="Segoe UI"
+                     FontSize="15"
+                     FontWeight="SemiBold"
+                     Text="Waiting for Spotify..."
+                     TextTrimming="CharacterEllipsis"
+                     TextWrapping="Wrap"
+                     TextAlignment="Left"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Opacity="1">
+              <TextBlock.RenderTransform>
+                  <TranslateTransform Y="0"/>
+              </TextBlock.RenderTransform>
+          </TextBlock>
+          <TextBlock x:Name="LyricText2"
+                     Foreground="#F7F7F7"
+                     FontFamily="Segoe UI"
+                     FontSize="15"
+                     FontWeight="SemiBold"
+                     Text=""
+                     TextTrimming="CharacterEllipsis"
+                     TextWrapping="Wrap"
+                     TextAlignment="Left"
+                     HorizontalAlignment="Left"
+                     VerticalAlignment="Center"
+                     Opacity="0">
+              <TextBlock.RenderTransform>
+                  <TranslateTransform Y="20"/>
+              </TextBlock.RenderTransform>
+          </TextBlock>
+      </Grid>
+    </Grid>
+  </Border>
+</Window>

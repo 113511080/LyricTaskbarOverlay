@@ -1,0 +1,21 @@
+# Directories
+bin/
+obj/
+publish/
+outputs/
+work/
+
+# Visual Studio files
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# App data
+AppData/
+*.log
+spotify_token.json
+
+# IDE config
+.vscode/
