@@ -1,35 +1,44 @@
-# Lyric Taskbar Overlay
+# Lyric Taskbar Overlay 🎵
 
-A small Windows overlay that shows lyrics for the song you are listening to. It is designed to look like a compact text strip near the bottom taskbar area.
+A sleek, minimalistic Windows overlay that displays real-time synced lyrics for the song you are currently listening to! It sits right above your taskbar, giving you a karaoke-style experience without cluttering your screen.
 
-## How it works
+## ✨ Features
 
-- Uses Windows native Global System Media Transport Controls (GSMTC) to get exact playback position and play/pause state from any media player (like Spotify).
-- Looks up lyrics from `https://lrclib.net`.
-- Shows the current synced lyric line in an always-on-top WPF window just above the taskbar.
+- **Auto-Syncs with Spotify**: Automatically detects what you're listening to and pulls the synced lyrics. 
+- **Auto-Launch**: Simply run the app, and it will automatically open Spotify for you if it isn't already running!
+- **Smooth Scrubbing**: Pause, rewind, or skip ahead in your song, and the lyrics will instantly jump to the perfect spot.
+- **Customizable UI**: Change the font size, opacity, window size, and text colors directly from the settings menu.
+- **Always on Top**: Keeps your lyrics visible over your other windows.
 
-This does not modify the real Windows taskbar. Windows does not provide a reliable public API for inserting arbitrary live text into the taskbar, so the app uses a taskbar-adjacent overlay.
+---
 
-## Requirements
+## 🚀 Getting Started
 
-- Windows 10/11
-- .NET 8 SDK or newer
-- Spotify desktop app (or any supported Windows media player)
-- Internet access for lyrics lookup
+### 1. Prerequisites
+- **Windows 10 or 11**
+- **.NET 8 SDK** (if you are running from the source code)
+- **Spotify Desktop App** installed
 
-## Run
-
+### 2. How to Run
+To start the app, open your terminal in the project folder and run:
 ```powershell
-dotnet run --project .\LyricTaskbarOverlay
+dotnet run
 ```
+That's it! The app will automatically launch Spotify for you. Once you play a song, the overlay will appear above your taskbar and start displaying lyrics.
 
-Start a song in Spotify, then run the app. The overlay should update automatically and sync the lyrics based on the exact timeline position.
+### 3. How to Use & Customize
+- **Move the Overlay**: Click and drag anywhere on the lyric text to move it around your screen.
+- **Settings Menu**: Right-click on the app's icon in your **Windows System Tray** (the small icons in the bottom right of your screen) and select **Settings...**.
+- **Close the App**: You can fully exit the overlay by right-clicking the system tray icon and selecting **Close**.
+- **Pinning**: In the settings menu, you can check "Pin" to lock the overlay in place so you don't accidentally drag it.
+- **Run on Startup**: Want lyrics every time you turn on your PC? Check the "Run on startup" box in the settings!
 
-Right-click the system tray icon to open Settings or close the app. You can also drag the overlay to move it if it's not pinned.
+---
 
-## Configuration
-Spotify Web API integration is available but optional. If you want to use it, you must provide your own Spotify API Client ID and Secret. Otherwise, the app falls back to Windows Media Controls.
+## 🛠️ How it Works (Under the Hood)
+- The app uses native **Windows Media Controls** to read your exact playback position. This means it works perfectly in the background without needing a Spotify Premium subscription!
+- Lyrics are fetched lightning-fast from the open-source library [LRCLIB](https://lrclib.net).
+- Built with C# and WPF for a lightweight, native Windows experience.
 
-## Limitations
-
-- Lyrics availability depends on LRCLIB.
+## ⚠️ Known Limitations
+- The app requires lyrics to be available on LRCLIB. If a song is very obscure or new, it may display "No lyrics found".
