@@ -37,7 +37,7 @@ That's it! The app will automatically launch Spotify for you. Once you play a so
 
 ## 🛠️ How it Works (Under the Hood)
 - The app uses native **Windows Media Controls** to read your exact playback position. This means it works perfectly in the background without needing a Spotify Premium subscription!
-- Lyrics are fetched lightning-fast from the open-source library [LRCLIB](https://lrclib.net).
+- Lyrics are fetched lightning-fast from the open-source library [LRCLIB](https://lrclib.net), with Netease Cloud Music ([music.163.com](https://music.163.com/)) acting as an alternative source fallback.
 - Built with C# and WPF for a lightweight, native Windows experience.
 
 ## ⚠️ Known Limitations
