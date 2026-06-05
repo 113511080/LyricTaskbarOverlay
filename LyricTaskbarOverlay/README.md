@@ -41,4 +41,4 @@ That's it! The app will automatically launch Spotify for you. Once you play a so
 - Built with C# and WPF for a lightweight, native Windows experience.
 
 ## ⚠️ Known Limitations
-- The app requires lyrics to be available on LRCLIB. If a song is very obscure or new, it may display "No lyrics found".
+- The app requires lyrics to be available on LRCLIB or Netease Cloud Music. If a song is very obscure or new, it may display "No lyrics found".
