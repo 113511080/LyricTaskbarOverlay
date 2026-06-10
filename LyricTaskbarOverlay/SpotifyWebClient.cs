@@ -12,8 +12,8 @@ namespace LyricTaskbarOverlay;
 public sealed class SpotifyWebClient
 {
     // Supply your own Spotify API Client ID and Secret if you want to use the Web API
-    private const string ClientId = "";
-    private const string ClientSecret = "";
+    private static string ClientId => AppConfig.Load().SpotifyClientId;
+    private static string ClientSecret => AppConfig.Load().SpotifyClientSecret;
     private const string RedirectUri = "http://127.0.0.1:5000/callback/";
     private static string TokenFile => Path.Combine(AppConfig.AppDataFolder, "spotify_token.json");
     private static string LogFile => Path.Combine(AppConfig.AppDataFolder, "debug.log");
@@ -96,7 +96,7 @@ public sealed class SpotifyWebClient
             if (result?.Item != null)
             {
                 var artist = string.Join(", ", result.Item.Artists.Select(a => a.Name));
-                var track = new TrackInfo(artist, result.Item.Name);
+                var track = new TrackInfo(artist, result.Item.Name, TimeSpan.FromMilliseconds(result.Item.Duration_Ms));
                 return new SpotifyPlayerState(track, TimeSpan.FromMilliseconds(result.Progress_Ms), result.Is_Playing, DateTimeOffset.Now);
             }
             else
@@ -254,7 +254,7 @@ public sealed class SpotifyWebClient
     private sealed record TokenResponse(string Access_Token, string Token_Type, int Expires_In, string? Refresh_Token);
 
     private sealed record CurrentlyPlayingResponse(long Progress_Ms, bool Is_Playing, PlaybackItem Item);
-    private sealed record PlaybackItem(string Name, PlaybackArtist[] Artists);
+    private sealed record PlaybackItem(string Name, PlaybackArtist[] Artists, long Duration_Ms);
     private sealed record PlaybackArtist(string Name);
 }
 

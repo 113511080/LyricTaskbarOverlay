@@ -28,6 +28,8 @@ public sealed class AppConfig
     public string ActiveLyricColor { get; set; } = "#C0C0C0";
     public string InactiveLyricColor { get; set; } = "#C0C0C0";
     public double LyricOffsetMs { get; set; } = 2500.0;
+    public string SpotifyClientId { get; set; } = "";
+    public string SpotifyClientSecret { get; set; } = "";
 
     public static AppConfig Load()
     {

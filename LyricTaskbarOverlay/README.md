@@ -37,8 +37,22 @@ That's it! The app will automatically launch Spotify for you. Once you play a so
 
 ## 🛠️ How it Works (Under the Hood)
 - The app uses native **Windows Media Controls** to read your exact playback position. This means it works perfectly in the background without needing a Spotify Premium subscription!
-- Lyrics are fetched lightning-fast from the open-source library [LRCLIB](https://lrclib.net), with Netease Cloud Music ([music.163.com](https://music.163.com/)) acting as an alternative source fallback.
+- Lyrics are fetched lightning-fast from the open-source library [LRCLIB](https://lrclib.net), with Netease Cloud Music ([music.163.com](https://music.163.com/)) acting as an alternative source fallback. The app uses the song's duration to automatically find the lyrics that perfectly fit the specific version of the song you are listening to.
 - Built with C# and WPF for a lightweight, native Windows experience.
+
+## 🔐 Optional: Spotify Web API Integration
+To get the most accurate song duration and playback details, the app supports integrating directly with the Spotify Web API.
+1. Create a free app on the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/).
+2. Set the Redirect URI to `http://127.0.0.1:5000/callback/`.
+3. Locate your `config.json` in `%APPDATA%\LyricTaskbarOverlay`.
+4. Add your **Client ID** and **Client Secret**:
+   ```json
+   {
+     "SpotifyClientId": "YOUR_CLIENT_ID",
+     "SpotifyClientSecret": "YOUR_CLIENT_SECRET"
+   }
+   ```
+5. Restart the app. It will prompt you in your browser to authorize.
 
 ## ⚠️ Known Limitations
 - The app requires lyrics to be available on LRCLIB or Netease Cloud Music. If a song is very obscure or new, it may display "No lyrics found".

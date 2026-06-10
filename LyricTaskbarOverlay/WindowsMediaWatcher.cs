@@ -38,7 +38,8 @@ public sealed class WindowsMediaWatcher
             if (info == null || string.IsNullOrWhiteSpace(info.Artist) || string.IsNullOrWhiteSpace(info.Title))
                 return null;
 
-            var track = new TrackInfo(info.Artist, info.Title);
+            var duration = timeline != null ? timeline.EndTime : TimeSpan.Zero;
+            var track = new TrackInfo(info.Artist, info.Title, duration);
             bool isPlaying = playback != null && playback.PlaybackStatus == GlobalSystemMediaTransportControlsSessionPlaybackStatus.Playing;
             TimeSpan progress = timeline != null ? timeline.Position : TimeSpan.Zero;
             DateTimeOffset timestamp = timeline != null ? timeline.LastUpdatedTime : DateTimeOffset.Now;

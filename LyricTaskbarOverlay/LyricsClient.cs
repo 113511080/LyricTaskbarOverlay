@@ -21,7 +21,7 @@ public sealed class LyricsClient
     public async Task<LyricsDocument?> GetLyricsAsync(TrackInfo track)
     {
         // 1. Exact match
-        var doc = await GetLyricsExactAsync(track.Artist, track.Name);
+        var doc = await GetLyricsExactAsync(track.Artist, track.Name, track.Duration);
         if (doc != null) return doc;
 
         var cleanedName = CleanTrackName(track.Name);
@@ -30,23 +30,23 @@ public sealed class LyricsClient
         // 2. Exact match with cleaned name/artist
         if (cleanedName != track.Name || cleanedArtist != track.Artist)
         {
-            doc = await GetLyricsExactAsync(cleanedArtist, cleanedName);
+            doc = await GetLyricsExactAsync(cleanedArtist, cleanedName, track.Duration);
             if (doc != null) return doc;
         }
 
         // 3. Search match
-        doc = await SearchLyricsAsync(track.Artist, track.Name);
+        doc = await SearchLyricsAsync(track.Artist, track.Name, track.Duration);
         if (doc != null) return doc;
 
         // 4. Search match with cleaned name
         if (cleanedName != track.Name || cleanedArtist != track.Artist)
         {
-            doc = await SearchLyricsAsync(cleanedArtist, cleanedName);
+            doc = await SearchLyricsAsync(cleanedArtist, cleanedName, track.Duration);
             if (doc != null) return doc;
         }
 
         // 5. Query search
-        doc = await SearchLyricsQueryAsync($"{cleanedArtist} {cleanedName}");
+        doc = await SearchLyricsQueryAsync($"{cleanedArtist} {cleanedName}", track.Duration);
         if (doc != null) return doc;
 
         // 6. Fallback to Netease Cloud Music
@@ -61,12 +61,17 @@ public sealed class LyricsClient
         return doc;
     }
 
-    private async Task<LyricsDocument?> GetLyricsExactAsync(string artist, string trackName)
+    private async Task<LyricsDocument?> GetLyricsExactAsync(string artist, string trackName, TimeSpan duration)
     {
         try
         {
             var path = "api/get?artist_name=" + Uri.EscapeDataString(artist) +
                        "&track_name=" + Uri.EscapeDataString(trackName);
+
+            if (duration > TimeSpan.Zero)
+            {
+                path += "&duration=" + Math.Round(duration.TotalSeconds).ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
 
             using var response = await Http.GetAsync(path);
             if (!response.IsSuccessStatusCode) return null;
@@ -80,7 +85,7 @@ public sealed class LyricsClient
         catch { return null; }
     }
 
-    private async Task<LyricsDocument?> SearchLyricsAsync(string artist, string trackName)
+    private async Task<LyricsDocument?> SearchLyricsAsync(string artist, string trackName, TimeSpan duration)
     {
         try
         {
@@ -94,12 +99,12 @@ public sealed class LyricsClient
             var results = await JsonSerializer.DeserializeAsync<LrclibResponse[]>(
                 stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return ProcessSearchResponses(results);
+            return ProcessSearchResponses(results, duration);
         }
         catch { return null; }
     }
 
-    private async Task<LyricsDocument?> SearchLyricsQueryAsync(string query)
+    private async Task<LyricsDocument?> SearchLyricsQueryAsync(string query, TimeSpan duration)
     {
         try
         {
@@ -112,7 +117,7 @@ public sealed class LyricsClient
             var results = await JsonSerializer.DeserializeAsync<LrclibResponse[]>(
                 stream, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            return ProcessSearchResponses(results);
+            return ProcessSearchResponses(results, duration);
         }
         catch { return null; }
     }
@@ -126,11 +131,19 @@ public sealed class LyricsClient
         return null;
     }
 
-    private LyricsDocument? ProcessSearchResponses(LrclibResponse[]? results)
+    private LyricsDocument? ProcessSearchResponses(LrclibResponse[]? results, TimeSpan duration)
     {
         if (results == null || results.Length == 0) return null;
-        var bestMatch = results.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.SyncedLyrics))
-                        ?? results.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.PlainLyrics));
+        
+        var candidates = results.AsEnumerable();
+        if (duration > TimeSpan.Zero)
+        {
+            var targetSeconds = duration.TotalSeconds;
+            candidates = candidates.OrderBy(r => r.Duration.HasValue ? Math.Abs(r.Duration.Value - targetSeconds) : double.MaxValue);
+        }
+
+        var bestMatch = candidates.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.SyncedLyrics))
+                        ?? candidates.FirstOrDefault(r => !string.IsNullOrWhiteSpace(r.PlainLyrics));
         return ProcessResponse(bestMatch);
     }
 
@@ -200,5 +213,5 @@ public sealed class LyricsClient
         return null;
     }
 
-    private sealed record LrclibResponse(string? SyncedLyrics, string? PlainLyrics);
+    private sealed record LrclibResponse(string? SyncedLyrics, string? PlainLyrics, double? Duration);
 }
